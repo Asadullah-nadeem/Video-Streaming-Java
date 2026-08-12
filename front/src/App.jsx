@@ -1,67 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-function ReelSlide({ index, videoKey, title, description, isMuted, registerVideoRef }) {
-  const videoRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  useEffect(() => {
-    registerVideoRef(index, videoRef.current);
-  }, [index, registerVideoRef]);
+import { API_URL, getHeaders } from './config/authguide';
+import ReelSlide from './components/ReelSlide';
 
-  const handlePlay = () => setIsPlaying(true);
-  const handlePause = () => setIsPlaying(false);
-
-  const handleTimeUpdate = () => {
-    if (videoRef.current) {
-      const percentage = (videoRef.current.currentTime / videoRef.current.duration) * 100;
-      setProgress(percentage || 0);
-    }
-  };
-
-  const handleVideoClick = () => {
-    if (videoRef.current) {
-      if (videoRef.current.paused) {
-        document.querySelectorAll('video').forEach(v => {
-          if (v !== videoRef.current) v.pause();
-        });
-        videoRef.current.play().catch(err => console.log("Play blocked:", err));
-      } else {
-        videoRef.current.pause();
-      }
-    }
-  };
-
-  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080';
-  const apiKey = import.meta.env.VITE_API_KEY || 'e7b065a7d32c4b5e8f1d2c6b0a4e8d32';
-  const streamUrl = `${apiUrl}/api/v1/videos/stream/${videoKey}?apiKey=${apiKey}`;
-
-  return (
-    <section className="slide" data-index={index}>
-      <div className="video-wrap" onClick={handleVideoClick}>
-        <video
-          ref={videoRef}
-          src={streamUrl}
-          loop
-          playsInline
-          muted={isMuted}
-          onPlay={handlePlay}
-          onPause={handlePause}
-          onTimeUpdate={handleTimeUpdate}
-          preload={index === 0 ? "auto" : "metadata"}
-        />
-        <div className="play-badge">
-          <i className={isPlaying ? "fas fa-pause-circle" : "fas fa-play-circle"} />
-        </div>
-        <div className="progress-bar-container">
-          <div className="progress-bar" style={{ width: `${progress}%` }} />
-        </div>
-      </div>
-      <div className="slide-caption">
-        <h2>{title || `Reel #${index + 1}`}</h2>
-        <p>{description || `Key: ${videoKey.substring(0, 10)}...`}</p>
-      </div>
-    </section>
-  );
-}
 export default function App() {
   const [reels, setReels] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -71,14 +11,11 @@ export default function App() {
 
   const containerRef = useRef(null);
   const videoRefs = useRef([]);
-  useEffect(() => {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080';
-    const apiKey = import.meta.env.VITE_API_KEY || 'e7b065a7d32c4b5e8f1d2c6b0a4e8d32';
 
-    fetch(`${apiUrl}/api/v1/videos/list`, {
-      headers: {
-        'X-API-KEY': apiKey
-      }
+  // Fetch list of video metadata securely
+  useEffect(() => {
+    fetch(`${API_URL}/api/v1/videos/list`, {
+      headers: getHeaders()
     })
       .then(res => {
         if (!res.ok) {
@@ -99,6 +36,8 @@ export default function App() {
   const registerVideoRef = (index, ref) => {
     videoRefs.current[index] = ref;
   };
+
+  // Track active slide index on scrolling (snaps when 60% of the slide is visible)
   useEffect(() => {
     if (reels.length === 0) return;
 
@@ -134,7 +73,7 @@ export default function App() {
       if (idx === activeIdx) {
         video.currentTime = 0; // Reset video to beginning
         video.play().catch(err => {
-          console.log("Autoplay paused. Click play icon to start with sound.", err);
+          console.log("Autoplay blocked by browser. Play with sound manually.", err);
         });
       } else {
         video.pause();
@@ -209,7 +148,6 @@ export default function App() {
     <div>
       {/* Top Header & Branding */}
       <header className="header-bar">
-        
         <button
           className="action-btn"
           onClick={() => setIsMuted(!isMuted)}
@@ -219,8 +157,6 @@ export default function App() {
           <i className={isMuted ? "fas fa-volume-mute" : "fas fa-volume-up"} />
         </button>
       </header>
-
-    
 
       {/* Scrollable vertical reels snaps */}
       <div className="reel-container" ref={containerRef}>
