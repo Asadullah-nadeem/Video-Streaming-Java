@@ -1,0 +1,29 @@
+# Java Maven Build Output
+**/target/
+.mvn/
+mvnw
+mvnw.cmd
+
+# Node / React Build Output & Dependencies
+**/node_modules/
+**/dist/
+
+# Environment Variables & Security Credentials
+**/.env
+**/.env.local
+**/.env.production
+
+# Local Uploaded Media Store (Must be hidden to prevent sharing video binaries)
+**/uploads/
+**/api/uploads/
+
+# IDE Configurations
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db

@@ -1,0 +1,322 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* Reset and Base Styles */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #0a0a0c;
+  color: #f0f0f0;
+  overflow: hidden;
+  line-height: 1.5;
+}
+
+/* Snap Scroll Container */
+.reel-container {
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE/Edge */
+}
+
+.reel-container::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* Each Slide */
+.slide {
+  height: 100vh;
+  width: 100%;
+  scroll-snap-align: start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: #0a0a0c;
+  overflow: hidden;
+}
+
+/* Radial shadow background overlay for cinematic depth */
+.slide::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, rgba(10, 10, 12, 0) 45%, rgba(10, 10, 12, 0.6) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Video Wrapper */
+.video-wrap {
+  position: relative;
+  width: min(92vw, 460px);
+  aspect-ratio: 9 / 16;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  background: #111;
+  z-index: 2;
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.video-wrap:hover {
+  transform: translateY(-4px);
+}
+
+.video-wrap video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: #0a0a0c;
+}
+
+/* Caption and overlay details */
+.slide-caption {
+  position: absolute;
+  bottom: 8%;
+  left: 24px;
+  right: 24px;
+  z-index: 3;
+  pointer-events: none;
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.8);
+}
+
+.slide-caption h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.slide-caption p {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Play/Pause Minimal Badge */
+.play-badge {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  background: rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  cursor: pointer;
+  border-radius: 24px;
+}
+
+.video-wrap:hover .play-badge {
+  opacity: 1;
+}
+
+.play-badge i {
+  font-size: 3rem;
+  color: #fff;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.6));
+  transition: transform 0.2s ease;
+}
+
+.play-badge i:hover {
+  transform: scale(1.1);
+  color: #f5b041;
+}
+
+/* Progress Bar at the bottom of the video */
+.progress-bar-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  z-index: 4;
+}
+
+.progress-bar {
+  height: 100%;
+  background: #f5b041;
+  width: 0%;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 10px rgba(245, 176, 65, 0.6);
+}
+
+/* Top Branding bar */
+.header-bar {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  right: 24px;
+  z-index: 30;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+}
+
+.brand {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: #fff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(10, 10, 12, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 8px 20px 8px 14px;
+  border-radius: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  pointer-events: auto;
+}
+
+.brand i {
+  color: #f5b041;
+  font-size: 0.85rem;
+}
+
+.brand span {
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.75rem;
+  margin-left: 2px;
+}
+
+.action-btn {
+  background: rgba(10, 10, 12, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  pointer-events: auto;
+}
+
+.action-btn:hover {
+  background: #f5b041;
+  color: #0a0a0c;
+  border-color: #f5b041;
+  transform: scale(1.05);
+}
+
+/* Sidebar Dots Navigation */
+.progress-dots {
+  position: fixed;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+
+.dot.active {
+  background: #f5b041;
+  transform: scale(1.5);
+  box-shadow: 0 0 16px rgba(245, 176, 65, 0.4);
+}
+
+.dot:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+/* States: Loading, Error, Empty */
+.state-container {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #0a0a0c;
+  color: #fff;
+  padding: 24px;
+  text-align: center;
+}
+
+.state-container i {
+  font-size: 3rem;
+  color: #f5b041;
+  margin-bottom: 16px;
+  animation: float 3s ease-in-out infinite;
+}
+
+.state-container h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.state-container p {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  max-width: 320px;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .video-wrap {
+    width: 94vw;
+    border-radius: 16px;
+  }
+  .play-badge {
+    border-radius: 16px;
+  }
+  .header-bar {
+    top: 16px;
+    left: 16px;
+    right: 16px;
+  }
+  .brand {
+    font-size: 0.85rem;
+    padding: 6px 16px 6px 12px;
+  }
+}
