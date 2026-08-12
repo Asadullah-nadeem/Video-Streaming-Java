@@ -2,7 +2,7 @@
 
 ReelStudio is a high-performance, secured vertical reels video streaming application built with a **Spring Boot REST API** and a **React.js Frontend (Vite)**.
 
-![Application UI Screenshot](Demo.png)
+<img src="Demo.png" alt="Application UI Screenshot" width="320" />
 
 ---
 
